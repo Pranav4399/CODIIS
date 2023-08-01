@@ -1,0 +1,30 @@
+.faculty-container {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .showButton {
+        margin: 10px;
+    }
+    .create-container {
+        padding: 20px;
+        margin: 0 auto;
+
+        .save-btn, .add-btn {
+          margin: 10px 0;
+        }
+      
+        .question-container {
+          margin-top: 20px;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+      
+          .q-textbox {
+            width: 100%;
+            margin-bottom: 10px;
+          }
+        }
+      }
+      
+}
