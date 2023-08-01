@@ -1,0 +1,62 @@
+// Login.scss
+
+.login-container, .signup-container {
+  text-align: center;
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 20px;
+
+  .login-title, .signup-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .MuiTextField-root {
+      margin: 10px 0;
+      width: 100%;
+
+      input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        &::placeholder {
+          color: #ccc;
+        }
+      }
+    }
+
+    .MuiButton-contained {
+      margin: 10px 0;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      font-size: 16px;
+      padding: 10px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  p {
+    font-size: 18px;
+  }
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -38,6 +38,14 @@ export const CreateAssignment = () => {
     }));
   };
 
+  const handleDeleteQuestion = (index) => {
+    setDetails((prev) => {
+      const updatedQuestions = [...prev.questions];
+      updatedQuestions.splice(index, 1);
+      return { ...prev, questions: updatedQuestions };
+    });
+  };
+
   const handleSave = () => {
     // Check if all attributes in details are filled
     const areAllAttributesFilled = details.questions.every(
@@ -80,6 +88,7 @@ export const CreateAssignment = () => {
         </Button>
       {details.questions.map((q, index) => (
         <div className="question-container" key={index}>
+          <Button variant="contained" onClick={() => handleDeleteQuestion(index)} className="delete-btn">Delete</Button>
           <TextField
             id="outlined-textarea"
             label="Question"
