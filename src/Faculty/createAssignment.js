@@ -2,9 +2,12 @@ import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { JsonView } from "react-json-view-lite";
+import { generateRandomString } from "../Helpers/helper.js";
+import axios from "axios";
 
-export const CreateAssignment = () => {
+export const CreateAssignment = ({id, setShowCreate}) => {
   const [details, setDetails] = useState({
+    assignmentId: generateRandomString(),
     assignmentName: "",
     questions: [],
   });
@@ -15,6 +18,7 @@ export const CreateAssignment = () => {
       questions: [
         ...prev.questions,
         {
+          questionId: generateRandomString(),
           question: "",
           questionOptions: "",
           answer: "",
@@ -46,10 +50,10 @@ export const CreateAssignment = () => {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async() => {
     // Check if all attributes in details are filled
     const areAllAttributesFilled = details.questions.every(
-      (q) => q.question && q.questionOptions && q.answer
+      (q) => q.question && q.questionOptions && q.answer && q.questionOptions.split(',').length === 4
     );
 
     if(!details.assignmentName){
@@ -63,12 +67,32 @@ export const CreateAssignment = () => {
     }
 
     if (!areAllAttributesFilled) {
-      alert('Please fill all the fields for each question before saving.');
+      alert('Please fill all the fields for each question before saving. If all fields are filled, please check question options as 4 comma separated options needs to be providedz');
       return;
     }
 
     // Here, you can proceed with the save logic
     console.log('Saving data:', details);
+    const {assignmentId, assignmentName, questions} = details;
+
+    try {
+      const res = await axios.post("http://localhost:8000/assignments", {
+        id,
+        assignmentId,
+        assignmentName,
+        questions
+      });
+
+      if (res.data.status === 200) {
+        setShowCreate(false);
+        alert("Assignment Created Successfully");
+      } else if (res.data === "fail") {
+        alert("Error occured");
+      }
+    } catch (error) {
+      alert("Wrong details");
+      console.error(error);
+    }
   }
 
   return (

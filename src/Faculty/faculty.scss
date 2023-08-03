@@ -1,30 +1,81 @@
 .faculty-container {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+
+  .showButton {
     margin: 10px;
+  }
+  .create-container {
+    padding: 20px;
+    margin: 0 auto;
+
+    .save-btn,
+    .add-btn {
+      margin: 10px 10px 10px 0;
+    }
+
+    .question-container {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+
+      .q-textbox {
+        width: 100%;
+        margin: 10px 0;
+      }
+    }
+  }
+
+  .view-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
 
-    .showButton {
-        margin: 10px;
-    }
-    .create-container {
-        padding: 20px;
-        margin: 0 auto;
+    .assignment-container {
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 80%;
 
-        .save-btn, .add-btn {
-          margin: 10px 10px 10px 0;
+      h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .question-container {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+
+        .question,
+        .answer {
+          margin: 5px;
+          padding: 5px;
+          border-radius: 4px;
         }
-      
-        .question-container {
-          margin-top: 20px;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-      
-          .q-textbox {
-            width: 100%;
-            margin: 10px 0;
+
+        .options {
+          display: flex;
+          flex-wrap: wrap;
+          margin-top: 10px;
+
+          .option {
+            margin: 5px;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+
+            .MuiChip-label {
+              font-size: 14px;
+              color: #333;
+            }
           }
         }
       }
-      
+    }
+  }
 }

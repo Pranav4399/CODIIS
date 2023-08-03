@@ -1,5 +1,5 @@
 const express = require("express");
-const collection = require("./mongo");
+const { userCollection, assignmentCollection } = require("./mongo"); // Import the object containing both collections
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -11,17 +11,15 @@ app.use(cors());
 
 app.get("/", cors(), (req, res) => {});
 
-app.post("/", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await collection.findOne({ email: email });
+    const user = await userCollection.findOne({ email: email });
 
     if (user) {
-      console.log(password, user.password);
       const passwordCheck = bcrypt.compareSync(password, user.password);
       if (!passwordCheck) {
-        console.log("inside if");
         res.json({ status: "Passwords does not match 1" });
       } else {
         console.log("Inside else");
@@ -61,7 +59,7 @@ app.post("/signup", async (req, res) => {
   console.log(data, "Data");
 
   try {
-    const check = await collection.findOne({ email: data.email });
+    const check = await userCollection.findOne({ email: data.email });
     console.log(check, "check");
     if (check) {
       res.json("exist");
@@ -72,6 +70,43 @@ app.post("/signup", async (req, res) => {
     }
   } catch (e) {
     res.json("fail");
+  }
+});
+
+// API to create a new assignment
+app.post("/assignments", async (req, res) => {
+  const { assignmentId, assignmentName, questions, id } = req.body;
+
+  try {
+    const newAssignment = {
+      createdBy: id,
+      assignmentId: assignmentId,
+      assignmentName: assignmentName,
+      questions: questions,
+    };
+
+    const result = await assignmentCollection.create(
+      newAssignment
+    );
+    res.json({status: 200, result: result});
+  } catch (e) {
+    res.json("fail");
+  }
+});
+
+// API to get all assignments
+app.get("/assignments", async (req, res) => {
+  try {
+    const createdBy = req.body.id;
+    const assignments = await assignmentCollection.find(createdBy);
+
+    if (assignments) {
+      res.status(200).json({ status: 200, result: assignments });
+    } else {
+      res.status(404).json({ status: 404 });
+    }
+  } catch (e) {
+    res.status(500).json({ status: 500, error: "Server Error" });
   }
 });
 

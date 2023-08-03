@@ -17,9 +17,9 @@ function Home() {
 
   return (
     <div className="homepage">
-      <h1>Hello {location.state.id} and welcome to the home. Your role is {location.state.role}. Token is {location.state.token}</h1>
+      <h1>Hello {location.state.id} and welcome to the home. Your role is {location.state.role}.</h1>
       <Button variant="contained" onClick={handleLogout}>Logout</Button>
-      {location.state.role === "student" ? <StudentHome /> : <FacultyHome />}
+      {location.state.role === "student" ? <StudentHome id={location.state.id} /> : <FacultyHome id={location.state.id} />}
     </div>
   );
 }
