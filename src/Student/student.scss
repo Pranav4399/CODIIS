@@ -1,0 +1,51 @@
+.student-view {
+    display: flex;
+    margin: 20px;
+
+    .assignment-list {
+        flex: 0 0 30%;
+        margin: 0 20px;
+
+        .MuiList-root {
+          margin-bottom: 20px !important;
+
+          .score {
+            margin: 0 10px;
+          }
+        }
+    }
+
+    .assignment-detail {
+        width: 100%;      
+        .header {
+          font-size: 18px;
+          font-weight: bold;
+          margin: 10px;
+          display: flex;
+          justify-content: space-between;
+        }
+      
+        .question {
+          font-size: 16px;
+          font-weight: bold;
+          margin: 10px;
+        }
+      
+        .options {
+          display: flex;
+          flex-direction: row;
+          gap: 10px;
+          margin: 10px;
+      
+          
+        }
+
+        .correction-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin: 0 10px;
+        }
+      }
+      
+}

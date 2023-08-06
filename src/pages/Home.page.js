@@ -4,6 +4,7 @@ import StudentHome from "../Student";
 import FacultyHome from "../Faculty";
 import { Button } from "@mui/material";
 import Cookies from "universal-cookie";
+import "./home.scss";
 
 function Home() {
   const location = useLocation();
@@ -17,9 +18,11 @@ function Home() {
 
   return (
     <div className="homepage">
-      <h1>Hello {location.state.id} and welcome to the home. Your role is {location.state.role}.</h1>
-      <Button variant="contained" onClick={handleLogout}>Logout</Button>
-      {location.state.role === "student" ? <StudentHome id={location.state.id} /> : <FacultyHome id={location.state.id} />}
+      <div className="home-header">
+        <div>Hello {location.state.id} and welcome to the home. Your role is {location.state.role}.</div>
+        <Button variant="contained" onClick={handleLogout}>Logout</Button>
+      </div>
+      {location.state.role === "student" ? <StudentHome studentId={location.state.id} /> : <FacultyHome id={location.state.id} />}
     </div>
   );
 }

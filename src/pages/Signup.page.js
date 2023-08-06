@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Button, TextField, RadioGroup, FormControlLabel, Radio } from "@mui/material";
-import "./Styles.scss"; // Import the SCSS file
+import "./style.scss"; // Import the SCSS file
 
 function SignUp() {
   const history = useNavigate();

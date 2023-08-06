@@ -52,12 +52,37 @@ const assignmentSchema = new mongoose.Schema({
       answer: { type: String, required: true },
     },
   ],
+  assignmentScore: {
+    type: Number,
+    required: true,
+  }
+});
+
+const answerSchema = new mongoose.Schema({
+  studentId: {
+    type: String,
+    required: true
+  },
+  assignment: [
+    {
+      assignmentId: { type: String, required: true },
+      studentScore: { type: Number, required: true },
+      answers: [
+        {
+          questionId: { type: String, required: true },
+          answer: { type: String, required: true },
+        }
+      ]
+    }
+  ],
 });
 
 const userCollection = mongoose.model("users", newSchema);
 const assignmentCollection = mongoose.model("assignments", assignmentSchema);
+const answerCollection = mongoose.model("answers", answerSchema)
 
 module.exports = {
   userCollection: userCollection,
   assignmentCollection: assignmentCollection,
+  answerCollection: answerCollection
 };

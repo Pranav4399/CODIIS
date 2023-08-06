@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Chip } from "@mui/material";
+import {
+  Chip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import StudentAnswer from "./studentAssignment";
 
 export const ViewAssignment = ({ id }) => {
   const [assignments, setAssignments] = useState([]);
@@ -13,7 +20,6 @@ export const ViewAssignment = ({ id }) => {
         });
 
         if (res.data.status === 200) {
-          console.log(res.data.result);
           setAssignments(res.data.result);
         } else if (res.data.status === 404) {
           alert("Error occured");
@@ -29,28 +35,45 @@ export const ViewAssignment = ({ id }) => {
 
   return (
     <div className="view-container">
-      {assignments.map((item, index) => {
-        return (
-          <div className="assignment-container" key={index}>
-            <h2>{item.assignmentName}</h2>
-            {item.questions.map((q, i) => {
-              return <div className="question-container">
-                <div className="question">{q.question}</div>
-                <div className="options">
-                  {q.questionOptions.split(',').map((option) => {
-                    return (
-                      <div className="option">
-                        <Chip label={option} />
+      <StudentAnswer id={id} />
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          Your Assignments
+        </AccordionSummary>
+        <AccordionDetails>
+          <h1>Your Assignments</h1>
+          {assignments.map((item, index) => {
+            return (
+              <div className="assignment-container" key={index}>
+                <h2>{item.assignmentName}</h2>
+                {item.questions.map((q, i) => {
+                  return (
+                    <div className="question-container">
+                      <div className="question">{q.question}</div>
+                      <div className="options">
+                        {q.questionOptions.split(",").map((option) => {
+                          return (
+                            <div className="option">
+                              <Chip label={option} />
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
-                </div>
-                <div className="answer"><Chip label={q.answer} color="success" /></div>
-              </div>;
-            })}
-          </div>
-        );
-      })}
+                      <div className="answer">
+                        <Chip label={q.answer} color="success" />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 };

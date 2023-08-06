@@ -1,5 +1,5 @@
 const express = require("express");
-const { userCollection, assignmentCollection } = require("./mongo"); // Import the object containing both collections
+const { userCollection, assignmentCollection, answerCollection } = require("./mongo"); // Import the object containing both collections
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -66,16 +66,15 @@ app.post("/signup", async (req, res) => {
     } else {
       res.json("notexist");
       console.log(data);
-      await collection.insertMany([data]);
+      await userCollection.insertMany([data]);
     }
   } catch (e) {
     res.json("fail");
   }
 });
 
-// API to create a new assignment
 app.post("/assignments", async (req, res) => {
-  const { assignmentId, assignmentName, questions, id } = req.body;
+  const { assignmentId, assignmentName, assignmentScore, questions, id } = req.body;
 
   try {
     const newAssignment = {
@@ -83,6 +82,7 @@ app.post("/assignments", async (req, res) => {
       assignmentId: assignmentId,
       assignmentName: assignmentName,
       questions: questions,
+      assignmentScore: assignmentScore
     };
 
     const result = await assignmentCollection.create(
@@ -94,7 +94,6 @@ app.post("/assignments", async (req, res) => {
   }
 });
 
-// API to get all assignments
 app.get("/assignments", async (req, res) => {
   try {
     const createdBy = req.body.id;
@@ -110,6 +109,59 @@ app.get("/assignments", async (req, res) => {
   }
 });
 
-app.listen(8000, () => {
-  console.log("port connected");
+app.get("/assignments", async (res) => {
+  try {
+    const assignments = await assignmentCollection.find();
+
+    if (assignments) {
+      res.status(200).json({ status: 200, result: assignments });
+    } else {
+      res.status(404).json({ status: 404 });
+    }
+  } catch (e) {
+    res.status(500).json({ status: 500, error: "Server Error" });
+  }
+});
+
+app.get("/studentAssignments", async (req, res) => {
+  try {
+    const studentId = req.query.studentId; // Accessing the studentId from query parameters
+    const assignments = studentId ? await answerCollection.find({ studentId: studentId }) : await answerCollection.find();
+
+    if (assignments) {
+      res.status(200).json({ status: 200, result: assignments });
+    } else {
+      res.status(404).json({ status: 404 });
+    }
+  } catch (e) {
+    res.status(500).json({ status: 500, error: "Server Error" });
+  }
+});
+
+
+app.post('/submit', async (req, res) => {
+  try {
+    const { studentId, assignment } = req.body;
+    console.log(assignment)
+    const existingStudent = await answerCollection.findOne({ studentId: studentId });
+
+    if (existingStudent) {
+      // If the studentId exists, push the assignment object into the 'answers' array
+      existingStudent.assignment.push(...assignment);
+      await existingStudent.save();
+    } else {
+      // If the studentId doesn't exist, create a new student entry
+      await answerCollection.create({ studentId: studentId, assignment: assignment });
+    }
+
+    res.json({ status: 200, message: 'Answers saved successfully' });
+  } catch (e) {
+    console.error('Error submitting answers:', e);
+    res.status(500).json({ status: 500, error: 'Server Error' });
+  }
+});
+
+const PORT = 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

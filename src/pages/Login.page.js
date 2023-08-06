@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import "./Styles.scss"; // Import the SCSS file
+import "./style.scss"; // Import the SCSS file
 import { Button, TextField } from "@mui/material";
 import Cookies from "universal-cookie";
 
@@ -21,7 +21,7 @@ function Login() {
         email,
         password,
       });
-
+      
       if (res.data.status === "exist") {
         cookies.set("TOKEN", res.data.token, {
           path: "/",

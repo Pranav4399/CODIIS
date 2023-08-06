@@ -4,11 +4,13 @@ import { useState } from "react";
 import { JsonView } from "react-json-view-lite";
 import { generateRandomString } from "../Helpers/helper.js";
 import axios from "axios";
+import "./faculty.scss";
 
 export const CreateAssignment = ({id, setShowCreate}) => {
   const [details, setDetails] = useState({
     assignmentId: generateRandomString(),
     assignmentName: "",
+    assignmentScore: 0,
     questions: [],
   });
 
@@ -50,8 +52,14 @@ export const CreateAssignment = ({id, setShowCreate}) => {
     });
   };
 
+  const handleScoreChange = (e) => {
+    setDetails((prev) => ({
+      ...prev,
+      assignmentScore: e.target.value,
+    }));
+  }
+
   const handleSave = async() => {
-    // Check if all attributes in details are filled
     const areAllAttributesFilled = details.questions.every(
       (q) => q.question && q.questionOptions && q.answer && q.questionOptions.split(',').length === 4
     );
@@ -71,15 +79,15 @@ export const CreateAssignment = ({id, setShowCreate}) => {
       return;
     }
 
-    // Here, you can proceed with the save logic
     console.log('Saving data:', details);
-    const {assignmentId, assignmentName, questions} = details;
+    const {assignmentId, assignmentName, questions, assignmentScore} = details;
 
     try {
       const res = await axios.post("http://localhost:8000/assignments", {
         id,
         assignmentId,
         assignmentName,
+        assignmentScore,
         questions
       });
 
@@ -106,13 +114,13 @@ export const CreateAssignment = ({id, setShowCreate}) => {
           onChange={handleNameChange}
           required
         />
+        <TextField label="Assignment Score" type="number" onChange={handleScoreChange} />
       </div>
       <Button className="add-btn" variant="contained" onClick={handleAddQuestion}>
           Add Questions
         </Button>
       {details.questions.map((q, index) => (
         <div className="question-container" key={index}>
-          <Button variant="contained" onClick={() => handleDeleteQuestion(index)} className="delete-btn">Delete</Button>
           <TextField
             id="outlined-textarea"
             label="Question"
@@ -144,12 +152,13 @@ export const CreateAssignment = ({id, setShowCreate}) => {
             className="q-textbox"
             required
           />
+          <Button variant="contained" onClick={() => handleDeleteQuestion(index)} className="delete-btn">Delete</Button>
         </div>
       ))}
        <Button className="save-btn" variant="contained" onClick={handleSave}>
           Save
         </Button>
-      <JsonView data={details} />
+      {/* <JsonView data={details} /> */}
     </div>
   );
 };

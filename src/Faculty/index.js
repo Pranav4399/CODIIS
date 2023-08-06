@@ -13,7 +13,7 @@ const FacultyHome = ({id}) => {
         {!showCreate ? "Create Assignment" : "Back"}
       </Button></div>}
       {!showCreate && <div className="showButton"><Button variant="contained" onClick={() => setShowView(prev => !prev)}>
-        {!showView ? "View Assignment" : "Back"}
+        {!showView ? "View Assignments" : "Back"}
       </Button></div>}
       {showCreate && <CreateAssignment id={id} setShowCreate={setShowCreate} />}
       {showView && <ViewAssignment id={id} setShowView={setShowView} />}
