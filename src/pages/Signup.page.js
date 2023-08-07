@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Button, TextField, RadioGroup, FormControlLabel, Radio } from "@mui/material";
-import "./style.scss"; // Import the SCSS file
+import axios from "axios";
+import {
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  Button,
+} from "@mui/material";
 
 function SignUp() {
   const history = useNavigate();
@@ -11,49 +16,80 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
 
-  async function submit(e) {
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const validateEmail = () => {
+    if (!email) {
+      setEmailError("Email is required");
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const validatePassword = () => {
+    if (!password) {
+      setPasswordError("Password is required");
+    } else if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  const submit = async (e) => {
     e.preventDefault();
 
-    try {
-      await axios
-        .post("http://localhost:8000/signup", {
+    validateEmail();
+    validatePassword();
+
+    if (!emailError && !passwordError) {
+      try {
+        const res = await axios.post("http://localhost:8000/signup", {
           email,
           password,
-          role
-        })
-        .then((res) => {
-          if (res.data == "exist") {
-            alert("User already exists");
-          } else if (res.data == "notexist") {
-            history("/home", { state: { id: email, role: role } });
-          }
-        })
-        .catch((e) => {
-          alert("wrong details");
-          console.log(e);
+          role,
         });
-    } catch (e) {
-      console.log(e);
+
+        if (res.data === "exist") {
+          alert("User already exists");
+        } else if (res.data === "notexist") {
+          history("/home", { state: { id: email, role: role } });
+        }
+      } catch (error) {
+        alert("Error: " + error.message);
+        console.error(error);
+      }
     }
-  }
+  };
 
   return (
     <div className="signup-container">
       <h1 className="signup-title">Signup</h1>
 
       <form action="POST">
-        <TextField 
+        <TextField
           type="email"
           onChange={(e) => {
             setEmail(e.target.value);
+            setEmailError("");
           }}
+          onBlur={validateEmail}
+          error={Boolean(emailError)}
+          helperText={emailError}
           placeholder="Email"
         />
-        <TextField 
+        <TextField
           type="password"
           onChange={(e) => {
             setPassword(e.target.value);
+            setPasswordError("");
           }}
+          onBlur={validatePassword}
+          error={Boolean(passwordError)}
+          helperText={passwordError}
           placeholder="Password"
         />
         <RadioGroup
@@ -63,10 +99,20 @@ function SignUp() {
           value={role}
           row
         >
-          <FormControlLabel value="student" control={<Radio />} label="Student" />
-          <FormControlLabel value="faculty" control={<Radio />} label="Faculty" />
+          <FormControlLabel
+            value="student"
+            control={<Radio />}
+            label="Student"
+          />
+          <FormControlLabel
+            value="faculty"
+            control={<Radio />}
+            label="Faculty"
+          />
         </RadioGroup>
-        <Button variant="contained" type="submit" onClick={submit}>Submit</Button>
+        <Button variant="contained" type="submit" onClick={submit}>
+          Submit
+        </Button>
       </form>
 
       <br />

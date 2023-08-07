@@ -21,6 +21,7 @@ const StudentAnswer = ({ id }) => {
   const [student, setStudent] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState();
   const [answers, setAnswers] = useState();
+  const [score, setScore] = useState();
 
   async function fetchAllAssignments() {
     try {
@@ -28,7 +29,7 @@ const StudentAnswer = ({ id }) => {
         id,
       });
       if (res.data.status === 200) {
-        console.log(res.data.result, "HELLO");
+        console.log(res.data.result, "1");
         setAssignments(res.data.result);
       }
     } catch (error) {
@@ -40,7 +41,7 @@ const StudentAnswer = ({ id }) => {
     try {
       const res = await axios.get("http://localhost:8000/studentAssignments");
       if (res.data.status === 200) {
-        console.log(res.data.result);
+        console.log(res.data.result, "2");
         setStudent(res.data.result);
       }
     } catch (error) {
@@ -56,53 +57,52 @@ const StudentAnswer = ({ id }) => {
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
     setAnswers([]);
+    setScore([]);
   };
 
-  const isSubmitEnabled = () => {
-    if (!selectedStudent) {
-      return false; // If no assignment is selected, disable the submit button
-    }
-
-    const answeredQuestionIds = answers.map((answer) => answer.questionId);
-    const allQuestionIds = selectedStudent.questions.map(
-      (question) => question.questionId
-    );
-
-    return allQuestionIds.every((questionId) =>
-      answeredQuestionIds.includes(questionId)
-    );
-  };
 
   const handleSubmit = async () => {
     try {
-      const req = {
-        assignment: [
-          {
-            assignmentId: selectedStudent.assignmentId,
-            studentScore: -1,
-            answers: answers,
-          },
-        ],
-      };
-
-      const res = await axios.post("http://localhost:8000/submit", req);
-
-      if (res.data.status === 200) {
-        fetchStudentAssignments();
-        setSelectedStudent();
-        alert("Answers Submitted Successfully");
-      } else if (res.data.status === 500) {
-        alert("Error occured");
-      }
+      axios
+        .put(`http://localhost:8000/updateScore`, {
+          studentScore: score.reduce((total, item) => total + item.score, 0),
+          studentId: selectedStudent.studentId,
+          assignmentId: score[0]?.assignmentId
+        })
+        .then((response) => {
+          setSelectedStudent();
+          alert("Assignment of Student has been corrected and data stored Successfully");
+        })
+        .catch((error) => {
+          alert("Error submitting changes");
+        });
     } catch (error) {
       console.error("Error submitting answers:", error);
     }
   };
 
-  const handleChange = (sid, qid, option) => {
-    console.log(sid, qid, option);
+  const handleChange = (aid, qid, option) => {
+    if (score.find(i => i.questionId === qid)) {
+      const updatedScore = score.map(item => {
+        if (item.questionId === qid) {
+          return {
+            ...item,
+            score: Number(option)
+          };
+        }
+        return item;
+      });
+  
+      setScore(updatedScore);
+    } else {
+      setScore([...score, {
+        assignmentId: aid,
+        questionId: qid,
+        score: Number(option)
+      }]);
+    }
   };
-
+  
   return (
     <div className="student-view">
       <div className="assignment-list">
@@ -116,6 +116,7 @@ const StudentAnswer = ({ id }) => {
               <ListItem disablePadding key={s.studentId}>
                 <ListItemButton onClick={() => handleStudentClick(s)}>
                   {s.studentId}
+                  {}
                 </ListItemButton>
               </ListItem>
             );
@@ -132,7 +133,6 @@ const StudentAnswer = ({ id }) => {
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
-                  //disabled={!isSubmitEnabled()}
                 >
                   Submit
                 </Button>
@@ -150,8 +150,9 @@ const StudentAnswer = ({ id }) => {
 
                     return (
                       <div key={question.questionId}>
+                        <h4 className="question" style={{textDecoration: "underline"}}>{assgn.studentScore !== -1 ? "You have already corrected this assignment" : ""}</h4>
                         <p className="question">
-                          {index + 1 + ". " + qs.question}
+                          {index + 1 + ". " + qs.question + " (Part of " + sameAssignment.assignmentName + ")"}
                         </p>
                         <RadioGroup
                           aria-label={`question-${qs.questionId}`}
@@ -178,22 +179,20 @@ const StudentAnswer = ({ id }) => {
                             defaultValue="first"
                             row
                             onChange={(e) =>
-                              handleChange(
-                                selectedStudent.studentId,
-                                question.questionId,
-                                e.target.value
-                              )
+                              handleChange(sameAssignment.assignmentId, question.questionId, e.target.value)
                             }
                           >
                             <FormControlLabel
                               value={1}
                               label="Correct"
                               control={<Radio />}
+                              disabled={assgn.studentScore !== -1}
                             />
                             <FormControlLabel
                               value={0}
                               label="Incorrect"
                               control={<Radio />}
+                              disabled={assgn.studentScore !== -1}
                             />
                           </RadioGroup>
                         </div>

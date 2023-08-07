@@ -139,7 +139,7 @@ const StudentHome = ({ studentId }) => {
               <ListItemButton onClick={() => handleAssignmentClick(assignment)} disabled>
                 {assignment.assignmentName}
               </ListItemButton>
-              <span className="score">{studentAssignments[0].studentScore === -1 ? "Not corrected" : studentAssignments[0].studentScore}</span>
+              <span className="score">{studentAssignments[0].studentScore === -1 ? "Not corrected" : "Your score - " + studentAssignments[0].studentScore}</span>
             </ListItem>
 }         )}
         </List>

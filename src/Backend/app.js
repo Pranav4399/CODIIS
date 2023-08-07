@@ -161,6 +161,38 @@ app.post('/submit', async (req, res) => {
   }
 });
 
+app.put('/updateScore', async (req, res) => {
+  const { studentId, assignmentId, studentScore } = req.body;
+  console.log(assignmentId);
+
+  try {
+    // Find the answer document with the provided studentId and assignmentId
+    const answer = await answerCollection.findOneAndUpdate(
+      {
+        studentId,
+        'assignment.assignmentId': assignmentId
+      },
+      {
+        $set: {
+          'assignment.$.studentScore': studentScore
+        }
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!answer) {
+      return res.status(404).json({ error: 'Answer not found' });
+    }
+
+    res.json(answer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+});
+
+
 const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
