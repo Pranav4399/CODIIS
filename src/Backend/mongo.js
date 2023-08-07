@@ -52,10 +52,6 @@ const assignmentSchema = new mongoose.Schema({
       answer: { type: String, required: true },
     },
   ],
-  assignmentScore: {
-    type: Number,
-    required: true,
-  }
 });
 
 const answerSchema = new mongoose.Schema({

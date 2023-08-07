@@ -10,7 +10,6 @@ export const CreateAssignment = ({id, setShowCreate}) => {
   const [details, setDetails] = useState({
     assignmentId: generateRandomString(),
     assignmentName: "",
-    assignmentScore: 0,
     questions: [],
   });
 
@@ -52,13 +51,6 @@ export const CreateAssignment = ({id, setShowCreate}) => {
     });
   };
 
-  const handleScoreChange = (e) => {
-    setDetails((prev) => ({
-      ...prev,
-      assignmentScore: e.target.value,
-    }));
-  }
-
   const handleSave = async() => {
     const areAllAttributesFilled = details.questions.every(
       (q) => q.question && q.questionOptions && q.answer && q.questionOptions.split(',').length === 4
@@ -80,14 +72,13 @@ export const CreateAssignment = ({id, setShowCreate}) => {
     }
 
     console.log('Saving data:', details);
-    const {assignmentId, assignmentName, questions, assignmentScore} = details;
+    const {assignmentId, assignmentName, questions} = details;
 
     try {
       const res = await axios.post("http://localhost:8000/assignments", {
         id,
         assignmentId,
         assignmentName,
-        assignmentScore,
         questions
       });
 
@@ -114,7 +105,6 @@ export const CreateAssignment = ({id, setShowCreate}) => {
           onChange={handleNameChange}
           required
         />
-        <TextField label="Assignment Score" type="number" onChange={handleScoreChange} />
       </div>
       <Button className="add-btn" variant="contained" onClick={handleAddQuestion}>
           Add Questions

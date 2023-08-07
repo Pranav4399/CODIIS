@@ -74,7 +74,7 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/assignments", async (req, res) => {
-  const { assignmentId, assignmentName, assignmentScore, questions, id } = req.body;
+  const { assignmentId, assignmentName, questions, id } = req.body;
 
   try {
     const newAssignment = {
@@ -82,7 +82,6 @@ app.post("/assignments", async (req, res) => {
       assignmentId: assignmentId,
       assignmentName: assignmentName,
       questions: questions,
-      assignmentScore: assignmentScore
     };
 
     const result = await assignmentCollection.create(
