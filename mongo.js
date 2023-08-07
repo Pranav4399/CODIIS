@@ -1,6 +1,7 @@
+const test = require('dotenv').config()
 const mongoose = require("mongoose");
 
-const dbURL = `mongodb+srv://pranav:Quf3N27iR5s9qKpX@atlascluster.qu7wk2l.mongodb.net/?retryWrites=true&w=majority`;
+const dbURL = `mongodb+srv://${process.env.DB_USER}:Quf3N27iR5s9qKpX@atlascluster.qu7wk2l.mongodb.net/?retryWrites=true&w=majority`;
 const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
