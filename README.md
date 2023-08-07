@@ -1,6 +1,6 @@
 # Pranav CODIIS TASK
 
-The backend is written at the root level inside index.js. It can be run using executing the command ###`nodemon` at the root level itself.
+The backend is written at the root level inside index.js. It can be run using executing the command `nodemon` at the root level itself.
 
 The DB used for the process is mongoDB and it's configuration are written inside mongo.js at root level.
 
